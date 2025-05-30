@@ -1,11 +1,7 @@
-package com.becoder.entity;
+package com.becoder.dto;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,14 +12,16 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class Category extends BaseModel{
+public class CategoryDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     private String description;
+    private Boolean isActive;
+    private Integer createdBy;
+    private Date createdOn;
+    private Integer updatedBy;
+    private Date updatedOn;
 
 
 }

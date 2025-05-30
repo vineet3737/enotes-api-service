@@ -23,6 +23,5 @@ public class BaseModel {
 	    private Integer updatedBy;
 	    private Date updatedOn;
 
-	    
 
 }
