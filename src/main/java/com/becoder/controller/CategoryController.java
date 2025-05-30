@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.List;
 
@@ -52,5 +54,24 @@ public class CategoryController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getCategoryById(@PathVariable Integer id){
+        CategoryDto categoryById = categoryService.getCategoryById(id);
+
+        if(ObjectUtils.isEmpty(categoryById)){
+            return new ResponseEntity<>("Category Not found with given Id ->"+ id, HttpStatus.NOT_FOUND);
+        } else{
+            return new ResponseEntity<>(categoryById, HttpStatus.OK);
+        }
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteById(@PathVariable Integer id){
+        Boolean deletedCategory = categoryService.deleteCategory(id);
+
+        if(deletedCategory){
+            return new ResponseEntity<>("Category Deleted Successfully !!", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Category Not Deleted !!", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
 }
