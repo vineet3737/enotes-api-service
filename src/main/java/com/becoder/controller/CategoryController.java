@@ -61,7 +61,7 @@ public class CategoryController {
         CategoryDto categoryById = categoryService.getCategoryById(id);
 
         if(ObjectUtils.isEmpty(categoryById)){
-            return new ResponseEntity<>("Category Not found with given Id ->"+ id, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Internal Server Error",HttpStatus.NOT_FOUND);
         } else{
             return new ResponseEntity<>(categoryById, HttpStatus.OK);
         }

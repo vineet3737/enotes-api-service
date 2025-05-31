@@ -3,6 +3,7 @@ package com.becoder.serviceImpl;
 import com.becoder.dto.CategoryDto;
 import com.becoder.dto.CategoryResponse;
 import com.becoder.entity.Category;
+import com.becoder.exception.ResourceNotFoundException;
 import com.becoder.repository.CategoryRepository;
 import com.becoder.service.CategoryService;
 import org.modelmapper.ModelMapper;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -66,6 +68,12 @@ public class CategoryServiceImpl implements CategoryService {
         List<Category> categories = categoryRepository.findByIsDeletedFalse();
         List<CategoryDto> categoryDtos = categories.stream()
                     .map(category -> mapper.map(category, CategoryDto.class)).toList();
+        //List<Object> list = new ArrayList<>();
+//        for(CategoryDto l: categoryDtos){
+//             List<CategoryDto> lo = new ArrayList<>();
+//             lo.add(l);
+//             lo.stream().map(leg -> leg.getId()).filter(num -> num % 2 ==0).forEach(System.out::println);
+//        }
         return categoryDtos;
     }
 
@@ -79,10 +87,17 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto getCategoryById(Integer id) {
-        Optional<Category> getById = categoryRepository.findByIdAndIsDeletedFalse(id);
-        if(getById.isPresent()){
-            Category category = getById.get();
-            return mapper.map(category, CategoryDto.class);
+//        Optional<Category> getById = categoryRepository.findByIdAndIsDeletedFalse(id);
+//        if(getById.isPresent()){
+//            Category category = getById.get();
+//            return mapper.map(category, CategoryDto.class);
+//        }
+//        return null;
+        Category getCategoryById = categoryRepository.
+                findByIdAndIsDeletedFalse(id).orElseThrow(() ->
+                        new ResourceNotFoundException("Category Id not found "+id));
+        if(!ObjectUtils.isEmpty(getCategoryById)){
+            return mapper.map(getCategoryById, CategoryDto.class);
         }
         return null;
     }
