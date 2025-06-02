@@ -3,6 +3,7 @@ package com.becoder.serviceImpl;
 import com.becoder.dto.CategoryDto;
 import com.becoder.dto.CategoryResponse;
 import com.becoder.entity.Category;
+import com.becoder.exception.ExistsDataException;
 import com.becoder.exception.ResourceNotFoundException;
 import com.becoder.repository.CategoryRepository;
 import com.becoder.service.CategoryService;
@@ -37,6 +38,11 @@ public class CategoryServiceImpl implements CategoryService {
         //category.setDescription(categoryDto.getDescription());
         //category.setIsActive(categoryDto.getIsActive());
         validation.categoryValidation(categoryDto);
+
+        Boolean existByName = categoryRepository.existsByName(categoryDto.getName().trim());
+        if(existByName){
+            throw new ExistsDataException("Category with this name already exists");
+        }
 
         Category category = mapper.map(categoryDto, Category.class);
 
