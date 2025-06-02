@@ -3,6 +3,7 @@ package com.becoder.exception;
 import com.becoder.util.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -34,6 +35,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<?> ValidationException(ValidationException e){
         return new ResponseEntity<>(e.getErrors(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<?> HttpMessageNotReadableException(HttpMessageNotReadableException e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ExistsDataException.class)
+    public ResponseEntity<?> ExistsDataException(ExistsDataException e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
 
 
