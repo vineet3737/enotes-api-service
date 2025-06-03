@@ -28,4 +28,13 @@ public class NotesDto {
     private Date createdOn;
     private Integer updatedBy;
     private Date updatedOn;
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class CategoryDto{
+
+        private Integer id;
+        private String name;
+      }
 }

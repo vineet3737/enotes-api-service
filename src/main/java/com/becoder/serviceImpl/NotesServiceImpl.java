@@ -2,6 +2,8 @@ package com.becoder.serviceImpl;
 
 import com.becoder.dto.NotesDto;
 import com.becoder.entity.Notes;
+import com.becoder.exception.ResourceNotFoundException;
+import com.becoder.repository.CategoryRepository;
 import com.becoder.repository.NotesRepos;
 import com.becoder.service.NotesService;
 import org.modelmapper.ModelMapper;
@@ -20,17 +22,26 @@ public class NotesServiceImpl implements NotesService {
     @Autowired
     private ModelMapper mapper;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
     @Override
     public Boolean saveNotes(NotesDto notesDto) {
-        //Validation
+        //Category Validation
+            checkCategoryExists(notesDto.getCategory());
 
         Notes notes = mapper.map(notesDto, Notes.class);
-
         Notes saveNotes = notesRepos.save(notes);
         if(!ObjectUtils.isEmpty(saveNotes)){
             return true;
         }
         return false;
+    }
+
+    private void checkCategoryExists(NotesDto.CategoryDto category) {
+
+           categoryRepository.findById(category.getId())
+                  .orElseThrow(() -> new ResourceNotFoundException("Category does not exits!!"));
     }
 
     @Override
