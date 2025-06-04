@@ -1,6 +1,7 @@
 package com.becoder.service;
 
 import com.becoder.dto.NotesDto;
+import com.becoder.dto.NotesResponse;
 import com.becoder.entity.FileDetails;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,4 +18,6 @@ public interface NotesService {
     byte[] downloadFile(FileDetails fileDetails) throws IOException;
 
     FileDetails getFileDetails(Integer id);
+
+    NotesResponse getAllNotesByUser(int userId, int pageNo, int pageSize);
 }

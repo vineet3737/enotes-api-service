@@ -1,6 +1,7 @@
 package com.becoder.serviceImpl;
 
 import com.becoder.dto.NotesDto;
+import com.becoder.dto.NotesResponse;
 import com.becoder.entity.FileDetails;
 import com.becoder.entity.Notes;
 import com.becoder.exception.ResourceNotFoundException;
@@ -13,6 +14,9 @@ import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StreamUtils;
@@ -145,6 +149,27 @@ public class NotesServiceImpl implements NotesService {
         FileDetails fileDetails = fileRepo.findById(id).
                 orElseThrow(() -> new ResourceNotFoundException("File with given id not present"));
         return fileDetails;
+    }
+
+    @Override
+    public NotesResponse getAllNotesByUser(int userId, int pageNo, int pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Notes> notesByPage = notesRepos.findByCreatedBy(userId, pageable);
+
+        List<NotesDto> notesDtos = notesByPage.get().map(m -> mapper.map(m, NotesDto.class)).toList();
+
+        NotesResponse notesResponse = NotesResponse.builder()
+                .notes(notesDtos)
+                .pageNo(notesByPage.getNumber())
+                .pageSize(notesByPage.getSize())
+                .totalElements(notesByPage.getTotalElements())
+                .totalPages(notesByPage.getTotalPages())
+                .isFirst(notesByPage.isFirst())
+                .isLast(notesByPage.isLast())
+                .build();
+
+        return notesResponse;
     }
 
 
