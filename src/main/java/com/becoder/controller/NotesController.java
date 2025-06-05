@@ -1,7 +1,9 @@
 package com.becoder.controller;
 
+import com.becoder.dto.FavouriteNoteDto;
 import com.becoder.dto.NotesDto;
 import com.becoder.dto.NotesResponse;
+import com.becoder.entity.FavouriteNote;
 import com.becoder.entity.FileDetails;
 import com.becoder.entity.Notes;
 import com.becoder.service.NotesService;
@@ -98,6 +100,28 @@ public class NotesController {
         int userId = 1;
         notesService.emptyRecycleBin(userId);
         return CommonUtils.createBuildResponseMessage("All Notes deleted successfully", HttpStatus.OK);
+    }
+
+
+    @GetMapping("/fav/{noteId}")
+    public ResponseEntity<?> getFavNotes(@PathVariable Integer noteId){
+        notesService.favNotes(noteId);
+        return CommonUtils.createBuildResponseMessage("Favourite Notes added!!", HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/unfav/{favId}")
+    public ResponseEntity<?> getUnFavNotes(@PathVariable Integer favId){
+        notesService.unfavNote(favId);
+        return CommonUtils.createBuildResponseMessage("Favourite Notes removed!!", HttpStatus.OK);
+    }
+
+    @GetMapping("favNotesByUser")
+    public ResponseEntity<?> getUnFavNotes(){
+        List<FavouriteNoteDto> userFavouriteNotes = notesService.getUserFavouriteNotes();
+        if(CollectionUtils.isEmpty(userFavouriteNotes)){
+            return ResponseEntity.noContent().build();
+        }
+        return CommonUtils.createBuildResponse(userFavouriteNotes, HttpStatus.OK);
     }
 
 

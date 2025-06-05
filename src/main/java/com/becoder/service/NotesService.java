@@ -1,7 +1,9 @@
 package com.becoder.service;
 
+import com.becoder.dto.FavouriteNoteDto;
 import com.becoder.dto.NotesDto;
 import com.becoder.dto.NotesResponse;
+import com.becoder.entity.FavouriteNote;
 import com.becoder.entity.FileDetails;
 import com.becoder.entity.Notes;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,4 +33,12 @@ public interface NotesService {
     void hardDeleteNotes(Integer id);
 
     void emptyRecycleBin(int id);
+
+    public void favNotes(Integer noteId);
+
+    public void unfavNote(Integer favouriteId);
+
+    List<FavouriteNoteDto> getUserFavouriteNotes();
+
+
 }
