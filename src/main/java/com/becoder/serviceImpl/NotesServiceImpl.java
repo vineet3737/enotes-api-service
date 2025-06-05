@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +26,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,12 +55,12 @@ public class NotesServiceImpl implements NotesService {
 
         ObjectMapper ob = new ObjectMapper();
         NotesDto notesDto = ob.readValue(notes, NotesDto.class);
+        notesDto.setDeleted(false);
+        notesDto.setDeletedOn(null);
 
         if (!ObjectUtils.isEmpty(notesDto.getId())) {
-
             updateNotes(notesDto, file);
         }
-
 
         //Category Validation
         checkCategoryExists(notesDto.getCategory());
@@ -174,7 +177,7 @@ public class NotesServiceImpl implements NotesService {
     public NotesResponse getAllNotesByUser(int userId, int pageNo, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<Notes> notesByPage = notesRepos.findByCreatedBy(userId, pageable);
+        Page<Notes> notesByPage = notesRepos.findByCreatedByAndIsDeletedFalse(userId, pageable);
 
         List<NotesDto> notesDtos = notesByPage.get().map(m -> mapper.map(m, NotesDto.class)).toList();
 
@@ -189,6 +192,56 @@ public class NotesServiceImpl implements NotesService {
                 .build();
 
         return notesResponse;
+    }
+
+    @Override
+    public void deleteNotes(Integer id) {
+        Notes notes = notesRepos.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Notes not found with given id " + id));
+        notes.setDeleted(true);
+        notes.setDeletedOn(LocalDateTime.now());
+        notesRepos.save(notes);
+    }
+
+    @Override
+    public void restoreNotes(Integer id) {
+        Notes notes = notesRepos.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Notes not found with given id " + id));
+        notes.setDeleted(false);
+        notes.setDeletedOn(null);
+        notesRepos.save(notes);
+    }
+
+    @Override
+    public List<NotesDto> getUserRecycleBinNotes(int userId) {
+
+        List<Notes> notes = notesRepos.findByCreatedByAndIsDeletedTrue(userId);
+        List<NotesDto> notesDtos = notes.stream().map(note -> mapper.map(note, NotesDto.class)).toList();
+        return notesDtos;
+    }
+
+    @Override
+    public void hardDeleteNotes(Integer id) {
+        Notes notes = notesRepos.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Notes not found with given id " + id));
+
+        if(notes.isDeleted()){
+            notesRepos.delete(notes);
+        }else{
+            throw new IllegalArgumentException("Sorry you cant hard delete it !!");
+        }
+    }
+
+    @Override
+    public void emptyRecycleBin(int id) {
+          List<Notes> notes =   notesRepos.findByCreatedByAndIsDeletedTrue(id);
+          if(!CollectionUtils.isEmpty(notes)){
+              notesRepos.deleteAll(notes);
+          }else{
+              throw new IllegalArgumentException("Sorry there is no data in recycle bin");
+          }
+
+
     }
 
 

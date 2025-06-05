@@ -3,17 +3,17 @@ package com.becoder.dto;
 import com.becoder.entity.Category;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class NotesDto {
 
     private Integer id;
@@ -30,6 +30,9 @@ public class NotesDto {
     private Date updatedOn;
 
     private FileDto fileDetails;
+
+    private boolean isDeleted;
+    private LocalDateTime deletedOn;
 
     @Getter
     @Setter
@@ -51,4 +54,5 @@ public class NotesDto {
         private Integer id;
         private String name;
       }
+
 }
