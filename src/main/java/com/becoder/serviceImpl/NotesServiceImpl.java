@@ -1,11 +1,14 @@
 package com.becoder.serviceImpl;
 
+import com.becoder.dto.FavouriteNoteDto;
 import com.becoder.dto.NotesDto;
 import com.becoder.dto.NotesResponse;
+import com.becoder.entity.FavouriteNote;
 import com.becoder.entity.FileDetails;
 import com.becoder.entity.Notes;
 import com.becoder.exception.ResourceNotFoundException;
 import com.becoder.repository.CategoryRepository;
+import com.becoder.repository.FavouriteRepos;
 import com.becoder.repository.FileRepository;
 import com.becoder.repository.NotesRepos;
 import com.becoder.service.NotesService;
@@ -27,10 +30,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class NotesServiceImpl implements NotesService {
@@ -46,6 +46,9 @@ public class NotesServiceImpl implements NotesService {
 
     @Autowired
     private FileRepository fileRepo;
+
+    @Autowired
+    private FavouriteRepos favouriteRepos;
 
     @Value("${file.upload.path}")
     private String uploadPath;
@@ -241,7 +244,37 @@ public class NotesServiceImpl implements NotesService {
               throw new IllegalArgumentException("Sorry there is no data in recycle bin");
           }
 
+    }
 
+    @Override
+    public void favNotes(Integer noteId) {
+        int userId = 1;
+        Notes notes = notesRepos.findById(noteId)
+                .orElseThrow(() -> new ResourceNotFoundException("Notes not present!!"));
+
+        FavouriteNote favouriteNote = FavouriteNote.builder()
+                .note(notes)
+                .userId(userId)
+                .build();
+        favouriteRepos.save(favouriteNote);
+
+    }
+
+    @Override
+    public void unfavNote(Integer favouriteId) {
+        FavouriteNote favouriteNote = favouriteRepos.findById(favouriteId)
+                .orElseThrow(() -> new ResourceNotFoundException("FavouriteNote not present!!"));
+        favouriteRepos.delete(favouriteNote);
+
+    }
+
+    @Override
+    public List<FavouriteNoteDto> getUserFavouriteNotes() {
+        int userId = 1;
+        List<FavouriteNote> favouriteNotes = favouriteRepos.findByUserId(userId);
+        List<FavouriteNoteDto> favouriteNoteDtos = favouriteNotes.stream()
+                .map(fav -> mapper.map(fav, FavouriteNoteDto.class)).toList();
+        return favouriteNoteDtos;
     }
 
 
