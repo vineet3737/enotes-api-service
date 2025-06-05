@@ -2,6 +2,7 @@ package com.becoder.dto;
 
 import lombok.*;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -19,4 +20,6 @@ public class NotesResponse {
     private Integer totalPages;
     private Boolean isFirst;
     private Boolean isLast;
+
+
 }

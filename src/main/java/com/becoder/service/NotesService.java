@@ -3,6 +3,7 @@ package com.becoder.service;
 import com.becoder.dto.NotesDto;
 import com.becoder.dto.NotesResponse;
 import com.becoder.entity.FileDetails;
+import com.becoder.entity.Notes;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
@@ -20,4 +21,14 @@ public interface NotesService {
     FileDetails getFileDetails(Integer id);
 
     NotesResponse getAllNotesByUser(int userId, int pageNo, int pageSize);
+
+    void deleteNotes(Integer id);
+
+    void restoreNotes(Integer id);
+
+    List<NotesDto> getUserRecycleBinNotes(int userId);
+
+    void hardDeleteNotes(Integer id);
+
+    void emptyRecycleBin(int id);
 }
