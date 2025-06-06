@@ -54,11 +54,7 @@ public class CategoryServiceImpl implements CategoryService {
             updateCategory(category);
         }
         Category saveCategory = categoryRepository.save(category);
-        if(ObjectUtils.isEmpty(saveCategory)){
-            return false;
-        }else {
-            return true;
-        }
+        return !ObjectUtils.isEmpty(saveCategory);
     }
 
     private void updateCategory(Category category) {
