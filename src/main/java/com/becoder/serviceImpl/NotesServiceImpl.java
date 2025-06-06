@@ -81,10 +81,7 @@ public class NotesServiceImpl implements NotesService {
         }
 
         Notes saveNotes = notesRepos.save(notesNew);
-        if(!ObjectUtils.isEmpty(saveNotes)){
-            return true;
-        }
-        return false;
+        return !ObjectUtils.isEmpty(saveNotes);
     }
 
     private void updateNotes(NotesDto notesDto, MultipartFile file) {
@@ -289,10 +286,7 @@ public class NotesServiceImpl implements NotesService {
                 .fileDetails(null)
                 .build();
         notesRepos.save(copyNotes);
-        if(!ObjectUtils.isEmpty(copyNotes)){
-            return true;
-        }
-        return false;
+        return !ObjectUtils.isEmpty(copyNotes);
     }
 
 
