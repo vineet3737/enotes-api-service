@@ -41,4 +41,5 @@ public interface NotesService {
     List<FavouriteNoteDto> getUserFavouriteNotes();
 
 
+    Boolean copyNotes(int id);
 }
