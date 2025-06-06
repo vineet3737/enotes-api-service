@@ -277,5 +277,23 @@ public class NotesServiceImpl implements NotesService {
         return favouriteNoteDtos;
     }
 
+    @Override
+    public Boolean copyNotes(int id) {
+        Notes notes = notesRepos.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Notes not available!!"));
+        Notes copyNotes = Notes.builder()
+                .title(notes.getTitle())
+                .description(notes.getDescription())
+                .isDeleted(false)
+                .category(notes.getCategory())
+                .fileDetails(null)
+                .build();
+        notesRepos.save(copyNotes);
+        if(!ObjectUtils.isEmpty(copyNotes)){
+            return true;
+        }
+        return false;
+    }
+
 
 }

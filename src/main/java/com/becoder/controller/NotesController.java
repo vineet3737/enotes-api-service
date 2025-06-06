@@ -116,12 +116,20 @@ public class NotesController {
     }
 
     @GetMapping("favNotesByUser")
-    public ResponseEntity<?> getUnFavNotes(){
+    public ResponseEntity<?> getUserFavouriteNotes(){
         List<FavouriteNoteDto> userFavouriteNotes = notesService.getUserFavouriteNotes();
         if(CollectionUtils.isEmpty(userFavouriteNotes)){
             return ResponseEntity.noContent().build();
         }
         return CommonUtils.createBuildResponse(userFavouriteNotes, HttpStatus.OK);
+    }
+    @GetMapping("/copy/{id}")
+    public ResponseEntity<?> copyNotes(@PathVariable int id){
+        Boolean copyingNotes =  notesService.copyNotes(id);
+        if(copyingNotes){
+            return CommonUtils.createBuildResponseMessage("Notes Copies successfully!!", HttpStatus.OK);
+        }
+        return CommonUtils.createErrorResponseMessage("Notes not copied !!", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 
