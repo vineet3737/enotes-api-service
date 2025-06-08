@@ -4,5 +4,5 @@ import com.becoder.dto.UserDto;
 
 public interface UserService {
 
-    public Boolean registerUser(UserDto userDto);
+    public Boolean registerUser(UserDto userDto) throws Exception;
 }
