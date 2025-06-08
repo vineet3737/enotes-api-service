@@ -25,6 +25,12 @@ public class GlobalExceptionHandler {
         return CommonUtils.createErrorResponseMessage(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(SuccessException.class)
+    public ResponseEntity<?> handleSuccessException(SuccessException e){
+        // return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return CommonUtils.createBuildResponseMessage(e.getMessage(), HttpStatus.OK);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleException(Exception e){
         //return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
