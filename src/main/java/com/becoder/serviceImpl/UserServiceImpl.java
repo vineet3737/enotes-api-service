@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     private EmailDetails emailDetails;
 
     @Override
-    public Boolean registerUser(UserDto userDto) throws Exception {
+    public Boolean registerUser(UserDto userDto, String url) throws Exception {
         validation.userValidation(userDto);
         User user = mapper.map(userDto, User.class);
         setRole(userDto, user);
@@ -49,13 +49,13 @@ public class UserServiceImpl implements UserService {
         User saveUser = userRepos.save(user);
         if(!ObjectUtils.isEmpty(saveUser)){
             //Send Email
-            emailSend(saveUser);
+            emailSend(saveUser, url);
             return true;
         }
         return false;
     }
 
-    private void emailSend(User saveUser) throws Exception {
+    private void emailSend(User saveUser, String url) throws Exception {
 
         String message="Hi,<b>[[username]]</b> "
                 + "<br><br> Your account register sucessfully.<br>"
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
 
         message = message.replace("[[username]]", saveUser.getFirstName());
         message  = message.replace("[[url]]",
-                "http://localhost:8080/api/v1/home/verify?uid=" + saveUser.getId() + "&&code=" + saveUser.getStatus().getVerificationCode());
+                url+"/api/v1/home/verify?uid=" + saveUser.getId() + "&&code=" + saveUser.getStatus().getVerificationCode());
 
 
         EmailRequest emailRequest = EmailRequest.builder()
