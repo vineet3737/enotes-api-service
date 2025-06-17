@@ -9,38 +9,6 @@ import org.springframework.http.ResponseEntity;
 
 public class CommonUtils {
 
-    public static ResponseEntity<?> createBuildResponse(Object data, HttpStatus status){
-        GenericResponse response = GenericResponse.builder()
-                .responseStatus(status)
-                .status("success")
-                .message("success")
-                .data(data)
-                .build();
-        return response.create();
-
-    }
-
-    public static ResponseEntity<?> createBuildResponseMessage(String message, HttpStatus status){
-        GenericResponse response = GenericResponse.builder()
-                .responseStatus(status)
-                .status("success")
-                .message(message)
-                .build();
-        return response.create();
-
-    }
-
-    public static ResponseEntity<?> createErrorResponse(Object data, HttpStatus status){
-        GenericResponse response = GenericResponse.builder()
-                .responseStatus(status)
-                .status("failed")
-                .message("failed")
-                .data(data)
-                .build();
-        return response.create();
-
-    }
-
     public static ResponseEntity<?> createErrorResponseMessage(String message, HttpStatus status){
         GenericResponse response = GenericResponse.builder()
                 .responseStatus(status)
@@ -75,6 +43,38 @@ public class CommonUtils {
         String apiUrl = request.getRequestURL().toString(); // http://localhost:8080/api/v1/auth/
         apiUrl = apiUrl.replace(request.getServletPath(),""); // http://localhost:8080
         return apiUrl;
+
+    }
+
+    public static ResponseEntity<?> createBuildResponse(Object data, HttpStatus status){
+        GenericResponse response = GenericResponse.builder()
+                .responseStatus(status)
+                .status("success")
+                .message("success")
+                .data(data)
+                .build();
+        return response.create();
+
+    }
+
+    public static ResponseEntity<?> createBuildResponseMessage(String message, HttpStatus status){
+        GenericResponse response = GenericResponse.builder()
+                .responseStatus(status)
+                .status("success")
+                .message(message)
+                .build();
+        return response.create();
+
+    }
+
+    public static ResponseEntity<?> createErrorResponse(Object data, HttpStatus status){
+        GenericResponse response = GenericResponse.builder()
+                .responseStatus(status)
+                .status("failed")
+                .message("failed")
+                .data(data)
+                .build();
+        return response.create();
 
     }
 }
