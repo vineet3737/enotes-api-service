@@ -6,6 +6,7 @@ import com.becoder.util.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ public class ToDoController {
     private ToDoService toDoService;
 
     @PostMapping("/saveToDo")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> saveToDo(@RequestBody ToDoDto toDoDto){
         Boolean saveToDo = toDoService.saveToDo(toDoDto);
         if(saveToDo){
@@ -29,12 +31,14 @@ public class ToDoController {
     }
 
     @GetMapping("/getTodo/{id}")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> getToDoById(@PathVariable Integer id){
         ToDoDto toDoById = toDoService.getToDoById(id);
         return CommonUtils.createBuildResponse(toDoById, HttpStatus.OK);
     }
 
     @GetMapping("/list")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> getAllTodo(){
         List<ToDoDto> toDoList = toDoService.getToDoByUser();
         if(CollectionUtils.isEmpty(toDoList)){
