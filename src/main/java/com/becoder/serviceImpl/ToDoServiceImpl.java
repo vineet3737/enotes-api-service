@@ -6,6 +6,7 @@ import com.becoder.enums.ToDoStatus;
 import com.becoder.exception.ResourceNotFoundException;
 import com.becoder.repository.ToDoRepository;
 import com.becoder.service.ToDoService;
+import com.becoder.util.CommonUtils;
 import com.becoder.util.Validation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +67,8 @@ public class ToDoServiceImpl implements ToDoService {
 
     @Override
     public List<ToDoDto> getToDoByUser() {
-        int userId = 1;
+        //int userId = 1;
+        Integer userId = CommonUtils.getLoggedInUser().getId();
         List<Todo> todoList = toDoRepos.findByCreatedBy(userId);
         List<ToDoDto> toDoDtos = todoList.stream()
                 .map(todo -> mapper.map(todo, ToDoDto.class)).toList();

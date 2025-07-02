@@ -22,17 +22,17 @@ public interface NotesService {
 
     FileDetails getFileDetails(Integer id);
 
-    NotesResponse getAllNotesByUser(int userId, int pageNo, int pageSize);
+    NotesResponse getAllNotesByUser(int pageNo, int pageSize);
 
     void deleteNotes(Integer id);
 
     void restoreNotes(Integer id);
 
-    List<NotesDto> getUserRecycleBinNotes(int userId);
+    List<NotesDto> getUserRecycleBinNotes();
 
     void hardDeleteNotes(Integer id);
 
-    void emptyRecycleBin(int id);
+    void emptyRecycleBin();
 
     public void favNotes(Integer noteId);
 

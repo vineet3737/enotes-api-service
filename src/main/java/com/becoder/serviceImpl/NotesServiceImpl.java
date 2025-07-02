@@ -12,6 +12,7 @@ import com.becoder.repository.FavouriteRepos;
 import com.becoder.repository.FileRepository;
 import com.becoder.repository.NotesRepos;
 import com.becoder.service.NotesService;
+import com.becoder.util.CommonUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
@@ -174,9 +175,10 @@ public class NotesServiceImpl implements NotesService {
     }
 
     @Override
-    public NotesResponse getAllNotesByUser(int userId, int pageNo, int pageSize) {
+    public NotesResponse getAllNotesByUser(int pageNo, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Integer userId = CommonUtils.getLoggedInUser().getId();
         Page<Notes> notesByPage = notesRepos.findByCreatedByAndIsDeletedFalse(userId, pageable);
 
         List<NotesDto> notesDtos = notesByPage.get().map(m -> mapper.map(m, NotesDto.class)).toList();
@@ -213,8 +215,9 @@ public class NotesServiceImpl implements NotesService {
     }
 
     @Override
-    public List<NotesDto> getUserRecycleBinNotes(int userId) {
+    public List<NotesDto> getUserRecycleBinNotes() {
 
+        Integer userId = CommonUtils.getLoggedInUser().getId();
         List<Notes> notes = notesRepos.findByCreatedByAndIsDeletedTrue(userId);
         List<NotesDto> notesDtos = notes.stream().map(note -> mapper.map(note, NotesDto.class)).toList();
         return notesDtos;
@@ -233,8 +236,10 @@ public class NotesServiceImpl implements NotesService {
     }
 
     @Override
-    public void emptyRecycleBin(int id) {
-          List<Notes> notes =   notesRepos.findByCreatedByAndIsDeletedTrue(id);
+    public void emptyRecycleBin() {
+
+        Integer userId = CommonUtils.getLoggedInUser().getId();
+        List<Notes> notes =   notesRepos.findByCreatedByAndIsDeletedTrue(userId);
           if(!CollectionUtils.isEmpty(notes)){
               notesRepos.deleteAll(notes);
           }else{
@@ -245,7 +250,8 @@ public class NotesServiceImpl implements NotesService {
 
     @Override
     public void favNotes(Integer noteId) {
-        int userId = 1;
+        //int userId = 1;
+        Integer userId = CommonUtils.getLoggedInUser().getId();
         Notes notes = notesRepos.findById(noteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Notes not present!!"));
 
@@ -267,7 +273,8 @@ public class NotesServiceImpl implements NotesService {
 
     @Override
     public List<FavouriteNoteDto> getUserFavouriteNotes() {
-        int userId = 1;
+        //int userId = 1;
+        Integer userId = CommonUtils.getLoggedInUser().getId();
         List<FavouriteNote> favouriteNotes = favouriteRepos.findByUserId(userId);
         List<FavouriteNoteDto> favouriteNoteDtos = favouriteNotes.stream()
                 .map(fav -> mapper.map(fav, FavouriteNoteDto.class)).toList();
