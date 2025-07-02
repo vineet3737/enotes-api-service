@@ -7,8 +7,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class LoginResponse {
+public class PasswordChangeRequest {
 
-    private UserResponse user;
-    private String token;
+    private String oldPassword;
+    private String newPassword;
 }
