@@ -16,7 +16,7 @@ public class UserResponse {
     private String lastName;
     private String email;
     private String mobNo;
-    private String password;
+    //private String password;
     private List<UserDto.RoleDto> roles;
     private StatusDto status;
 

@@ -3,7 +3,7 @@ package com.becoder.controller;
 import com.becoder.dto.LoginRequest;
 import com.becoder.dto.LoginResponse;
 import com.becoder.dto.UserDto;
-import com.becoder.service.UserService;
+import com.becoder.service.AuthService;
 import com.becoder.util.CommonUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     @Autowired
-    private UserService userService;
+    private AuthService userService;
 
     @PostMapping("/")
     public ResponseEntity<?> saveUser(@RequestBody UserDto userDto, HttpServletRequest request) throws Exception {
