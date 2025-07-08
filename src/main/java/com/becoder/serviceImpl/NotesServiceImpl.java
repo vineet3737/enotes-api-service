@@ -197,6 +197,27 @@ public class NotesServiceImpl implements NotesService {
     }
 
     @Override
+    public NotesResponse getAllNotesByUserSearch(int pageNo, int pageSize, String keyword) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Integer userId = CommonUtils.getLoggedInUser().getId();
+        Page<Notes> notesByPage = notesRepos.searchNotes(keyword,userId, pageable);
+
+        List<NotesDto> notesDtos = notesByPage.get().map(m -> mapper.map(m, NotesDto.class)).toList();
+
+        NotesResponse notesResponse = NotesResponse.builder()
+                .notes(notesDtos)
+                .pageNo(notesByPage.getNumber())
+                .pageSize(notesByPage.getSize())
+                .totalElements(notesByPage.getTotalElements())
+                .totalPages(notesByPage.getTotalPages())
+                .isFirst(notesByPage.isFirst())
+                .isLast(notesByPage.isLast())
+                .build();
+
+        return notesResponse;
+    }
+
+    @Override
     public void deleteNotes(Integer id) {
         Notes notes = notesRepos.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Notes not found with given id " + id));
@@ -295,6 +316,8 @@ public class NotesServiceImpl implements NotesService {
         notesRepos.save(copyNotes);
         return !ObjectUtils.isEmpty(copyNotes);
     }
+
+
 
 
 }
