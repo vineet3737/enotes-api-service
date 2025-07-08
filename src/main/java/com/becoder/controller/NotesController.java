@@ -146,5 +146,18 @@ public class NotesController {
         return CommonUtils.createErrorResponseMessage("Notes not copied !!", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @GetMapping("/search")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> getAllNotesByUserSearch(@RequestParam (name = "key", defaultValue = "") String key,
+                                                         @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
+                                               @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize){
+        //int userId = 1;
+        NotesResponse allNotesByUser = notesService.getAllNotesByUserSearch(pageNo, pageSize, key);
+        if(ObjectUtils.isEmpty(allNotesByUser)){
+            return ResponseEntity.noContent().build();
+        }
+        return CommonUtils.createBuildResponse(allNotesByUser, HttpStatus.OK);
+    }
+
 
 }

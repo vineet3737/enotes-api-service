@@ -24,6 +24,8 @@ public interface NotesService {
 
     NotesResponse getAllNotesByUser(int pageNo, int pageSize);
 
+    NotesResponse getAllNotesByUserSearch(int pageNo, int pageSize, String keyword);
+
     void deleteNotes(Integer id);
 
     void restoreNotes(Integer id);
