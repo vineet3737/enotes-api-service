@@ -1,6 +1,7 @@
 package com.becoder.controller;
 
 import com.becoder.dto.PasswordResetReq;
+import com.becoder.endpoint.HomeEndpoint;
 import com.becoder.service.HomeService;
 import com.becoder.service.UserService;
 import com.becoder.util.CommonUtils;
@@ -12,8 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/home")
-public class HomeController {
+
+public class HomeController implements HomeEndpoint {
 
     @Autowired
     private HomeService service;
@@ -21,7 +22,7 @@ public class HomeController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/verify")
+     @Override
     public ResponseEntity<?> verifyUserAccount(@RequestParam Integer uid, @RequestParam String code){
         Boolean verifiedAccount = service.verifyAccount(uid, code);
         if(verifiedAccount){
@@ -30,19 +31,19 @@ public class HomeController {
         return CommonUtils.createErrorResponseMessage("Invalid Verification Link", HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping("/send-email-reset")
+    @Override
     public ResponseEntity<?> sendEmailPasswordReset(@RequestParam String email, HttpServletRequest request) throws Exception {
         userService.sendEmailPasswordReset(email, request);
         return CommonUtils.createBuildResponseMessage("Email Send Success !! Check Email to Reset Password", HttpStatus.OK);
     }
 
-    @GetMapping("/verify-pswd-link")
+    @Override
     public ResponseEntity<?> verifyPasswordResetLink(@RequestParam Integer uid, @RequestParam String code) throws Exception {
         userService.verifyPasswordResetLink(uid, code);
         return CommonUtils.createBuildResponseMessage("Verification Success", HttpStatus.OK);
     }
 
-    @PostMapping("/reset-password")
+    @Override
     public ResponseEntity<?> resetPassword(@RequestBody PasswordResetReq passwordResetReq) throws Exception {
         userService.resetPassword(passwordResetReq);
         return CommonUtils.createBuildResponseMessage("Password Reset Successfully!!", HttpStatus.OK);

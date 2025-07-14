@@ -1,6 +1,7 @@
 package com.becoder.controller;
 
 import com.becoder.dto.ToDoDto;
+import com.becoder.endpoint.TodoEndpoint;
 import com.becoder.service.ToDoService;
 import com.becoder.util.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +15,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/todo")
-public class ToDoController {
+public class ToDoController implements TodoEndpoint {
 
     @Autowired
     private ToDoService toDoService;
 
-    @PostMapping("/saveToDo")
-    @PreAuthorize("hasRole('USER')")
+    @Override
     public ResponseEntity<?> saveToDo(@RequestBody ToDoDto toDoDto){
         Boolean saveToDo = toDoService.saveToDo(toDoDto);
         if(saveToDo){
@@ -30,15 +29,13 @@ public class ToDoController {
         return CommonUtils.createErrorResponseMessage("ToDo not saved !!", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @GetMapping("/getTodo/{id}")
-    @PreAuthorize("hasRole('USER')")
+    @Override
     public ResponseEntity<?> getToDoById(@PathVariable Integer id){
         ToDoDto toDoById = toDoService.getToDoById(id);
         return CommonUtils.createBuildResponse(toDoById, HttpStatus.OK);
     }
 
-    @GetMapping("/list")
-    @PreAuthorize("hasRole('USER')")
+    @Override
     public ResponseEntity<?> getAllTodo(){
         List<ToDoDto> toDoList = toDoService.getToDoByUser();
         if(CollectionUtils.isEmpty(toDoList)){
