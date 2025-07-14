@@ -2,6 +2,7 @@ package com.becoder.controller;
 
 import com.becoder.dto.CategoryDto;
 import com.becoder.dto.CategoryResponse;
+import com.becoder.endpoint.CategoryEndpoint;
 import com.becoder.entity.Category;
 import com.becoder.service.CategoryService;
 //import jakarta.validation.Valid;
@@ -18,14 +19,13 @@ import org.springframework.web.client.HttpServerErrorException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/category")
-public class CategoryController {
+public class CategoryController implements CategoryEndpoint {
     
     @Autowired
     private CategoryService categoryService;
 
-    @PostMapping("/saveCategory")
-    @PreAuthorize("hasRole('ADMIN')")
+
+    @Override
     public ResponseEntity<?> saveCategory(@RequestBody CategoryDto categoryDto){
         Boolean saveCategory = categoryService.saveCategory(categoryDto);
 
@@ -38,8 +38,7 @@ public class CategoryController {
         }
     }
 
-    @GetMapping("/getCategory")
-    @PreAuthorize("hasRole('ADMIN')")
+    @Override
     public ResponseEntity<?> getAllCategory(){
         //String mn = null;
         //mn.toUpperCase();
@@ -53,8 +52,7 @@ public class CategoryController {
         }
     }
 
-    @GetMapping("/getActiveCategory")
-    @PreAuthorize("hasRole('USER')")
+    @Override
     public ResponseEntity<?> getActiveCategory(){
         List<CategoryResponse> allCategory = categoryService.getActiveCategory();
 
@@ -66,8 +64,7 @@ public class CategoryController {
         }
     }
 
-    @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @Override
     public ResponseEntity<?> getCategoryById(@PathVariable Integer id){
         CategoryDto categoryById = categoryService.getCategoryById(id);
 
@@ -79,8 +76,7 @@ public class CategoryController {
             return CommonUtils.createBuildResponse(categoryById, HttpStatus.OK);
         }
     }
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @Override
     public ResponseEntity<?> deleteById(@PathVariable Integer id){
         Boolean deletedCategory = categoryService.deleteCategory(id);
 

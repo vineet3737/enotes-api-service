@@ -3,6 +3,7 @@ package com.becoder.controller;
 import com.becoder.dto.LoginRequest;
 import com.becoder.dto.LoginResponse;
 import com.becoder.dto.UserDto;
+import com.becoder.endpoint.AuthEndpoint;
 import com.becoder.service.AuthService;
 import com.becoder.util.CommonUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,13 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/auth")
-public class AuthController {
+public class AuthController implements AuthEndpoint {
 
     @Autowired
     private AuthService userService;
 
-    @PostMapping("/")
+    @Override
     public ResponseEntity<?> saveUser(@RequestBody UserDto userDto, HttpServletRequest request) throws Exception {
         String url = CommonUtils.getUrl(request);
         Boolean saveUser = userService.registerUser(userDto, url);
@@ -32,7 +32,7 @@ public class AuthController {
         return CommonUtils.createErrorResponseMessage("Notes not saved !!", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @PostMapping("/login")
+   @Override
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) throws Exception {
         LoginResponse loginResponse = userService.login(loginRequest);
            if(ObjectUtils.isEmpty(loginResponse)){

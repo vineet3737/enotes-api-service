@@ -2,6 +2,7 @@ package com.becoder.controller;
 
 import com.becoder.dto.PasswordChangeRequest;
 import com.becoder.dto.UserResponse;
+import com.becoder.endpoint.UserEndpoint;
 import com.becoder.entity.User;
 import com.becoder.service.UserService;
 import com.becoder.util.CommonUtils;
@@ -15,8 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/user")
-public class UserController {
+public class UserController implements UserEndpoint {
 
     @Autowired
     private ModelMapper mapper;
@@ -24,14 +24,15 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-      @GetMapping("/profile")
+
+      @Override
       public ResponseEntity<?> getLoggedInUser(){
           User loggedInUser = CommonUtils.getLoggedInUser();
           UserResponse userResponse = mapper.map(loggedInUser, UserResponse.class);
           return CommonUtils.createBuildResponse(userResponse, HttpStatus.OK);
       }
 
-    @GetMapping("/passwordChange")
+    @Override
     public ResponseEntity<?> changePassword(@RequestBody PasswordChangeRequest passwordChangeRequest){
         Boolean changPasswd = userService.changePassword(passwordChangeRequest);
         if(changPasswd){
