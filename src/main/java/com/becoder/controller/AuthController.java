@@ -23,7 +23,7 @@ public class AuthController implements AuthEndpoint {
     private AuthService userService;
 
     @Override
-    public ResponseEntity<?> saveUser(@RequestBody UserDto userDto, HttpServletRequest request) throws Exception {
+    public ResponseEntity<?> saveUser(UserDto userDto, HttpServletRequest request) throws Exception {
         String url = CommonUtils.getUrl(request);
         Boolean saveUser = userService.registerUser(userDto, url);
         if(saveUser){
@@ -33,7 +33,7 @@ public class AuthController implements AuthEndpoint {
     }
 
    @Override
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) throws Exception {
+    public ResponseEntity<?> login(LoginRequest loginRequest) throws Exception {
         LoginResponse loginResponse = userService.login(loginRequest);
            if(ObjectUtils.isEmpty(loginResponse)){
                return CommonUtils.createErrorResponseMessage("Invalid Credentials", HttpStatus.BAD_REQUEST);
