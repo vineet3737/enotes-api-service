@@ -31,8 +31,7 @@ public class NotesController implements NotesEndpoint {
 
 
     @Override
-    public ResponseEntity<?> saveNotes(@RequestParam String notes,
-                                       @RequestParam (required = false) MultipartFile file) throws Exception {
+    public ResponseEntity<?> saveNotes(String notes, MultipartFile file) throws Exception {
         Boolean saveNotes = notesService.saveNotes(notes, file);
         if(saveNotes){
             return CommonUtils.createBuildResponseMessage("Notes saved successfully", HttpStatus.CREATED);
@@ -41,7 +40,7 @@ public class NotesController implements NotesEndpoint {
     }
 
     @Override
-    public ResponseEntity<?> downloadFile(@PathVariable Integer id) throws Exception {
+    public ResponseEntity<?> downloadFile(Integer id) throws Exception {
                 FileDetails fileDetails =  notesService.getFileDetails(id);
                byte[] data =    notesService.downloadFile(fileDetails);
                HttpHeaders headers = new HttpHeaders();
@@ -61,8 +60,7 @@ public class NotesController implements NotesEndpoint {
     }
 
     @Override
-    public ResponseEntity<?> getAllNotesByUser(@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
-     @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize){
+    public ResponseEntity<?> getAllNotesByUser(Integer pageNo, Integer pageSize){
         //int userId = 1;
         NotesResponse allNotesByUser = notesService.getAllNotesByUser(pageNo, pageSize);
         if(ObjectUtils.isEmpty(allNotesByUser)){
@@ -71,13 +69,13 @@ public class NotesController implements NotesEndpoint {
         return CommonUtils.createBuildResponse(allNotesByUser, HttpStatus.OK);
     }
     @Override
-    public ResponseEntity<?> deleteNotes(@PathVariable Integer id){
+    public ResponseEntity<?> deleteNotes(Integer id){
             notesService.deleteNotes(id);
         return CommonUtils.createBuildResponseMessage("Notes deleted successfully", HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<?> restoreNotes(@PathVariable Integer id){
+    public ResponseEntity<?> restoreNotes(Integer id){
         notesService.restoreNotes(id);
         return CommonUtils.createBuildResponseMessage("Notes restored successfully", HttpStatus.OK);
     }
@@ -93,7 +91,7 @@ public class NotesController implements NotesEndpoint {
     }
 
     @Override
-    public ResponseEntity<?> hardDeleteNotes(@PathVariable Integer id){
+    public ResponseEntity<?> hardDeleteNotes(Integer id){
         notesService.hardDeleteNotes(id);
         return CommonUtils.createBuildResponseMessage("Notes deleted successfully", HttpStatus.OK);
     }
@@ -107,13 +105,13 @@ public class NotesController implements NotesEndpoint {
 
 
     @Override
-    public ResponseEntity<?> getFavNotes(@PathVariable Integer noteId){
+    public ResponseEntity<?> getFavNotes(Integer noteId){
         notesService.favNotes(noteId);
         return CommonUtils.createBuildResponseMessage("Favourite Notes added!!", HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<?> getUnFavNotes(@PathVariable Integer favId){
+    public ResponseEntity<?> getUnFavNotes(Integer favId){
         notesService.unfavNote(favId);
         return CommonUtils.createBuildResponseMessage("Favourite Notes removed!!", HttpStatus.OK);
     }
@@ -127,7 +125,7 @@ public class NotesController implements NotesEndpoint {
         return CommonUtils.createBuildResponse(userFavouriteNotes, HttpStatus.OK);
     }
     @Override
-    public ResponseEntity<?> copyNotes(@PathVariable int id){
+    public ResponseEntity<?> copyNotes(int id){
         Boolean copyingNotes =  notesService.copyNotes(id);
         if(copyingNotes){
             return CommonUtils.createBuildResponseMessage("Notes Copies successfully!!", HttpStatus.OK);
@@ -136,9 +134,9 @@ public class NotesController implements NotesEndpoint {
     }
 
     @Override
-    public ResponseEntity<?> getAllNotesByUserSearch(@RequestParam (name = "key", defaultValue = "") String key,
-                                                         @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
-                                               @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize){
+    public ResponseEntity<?> getAllNotesByUserSearch(String key,
+                                                         Integer pageNo,
+                                               Integer pageSize){
         //int userId = 1;
         NotesResponse allNotesByUser = notesService.getAllNotesByUserSearch(pageNo, pageSize, key);
         if(ObjectUtils.isEmpty(allNotesByUser)){
