@@ -2,7 +2,7 @@ spring:
   application:
     name: Enotes_API_Service
   profiles:
-    active: prod
+    active: dev
 
 ---
 # dev config
@@ -43,7 +43,15 @@ springdoc:
     path: /enotes-doc
   api-docs:
     path: /enotes-api-docs
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+        exclude: beans,loggers
+  endpoint:
+    shutdown:
+      access: none
 file:
   upload:
     path: notes/
