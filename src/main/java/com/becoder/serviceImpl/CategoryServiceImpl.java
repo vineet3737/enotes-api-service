@@ -6,17 +6,17 @@ import com.becoder.entity.Category;
 import com.becoder.exception.ExistsDataException;
 import com.becoder.exception.ResourceNotFoundException;
 import com.becoder.repository.CategoryRepository;
+import com.becoder.service.CacheManagerService;
 import com.becoder.service.CategoryService;
 import com.becoder.util.Validation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -29,6 +29,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
      private Validation validation;
+
+     @Autowired
+     private CacheManagerService cacheService;
 
     @Override
     public Boolean saveCategory(CategoryDto categoryDto) {
@@ -71,6 +74,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Cacheable("allCategory")
     public List<CategoryDto> getAllCategory() {
         List<Category> categories = categoryRepository.findByIsDeletedFalse();
         List<CategoryDto> categoryDtos = categories.stream()
@@ -85,6 +89,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Cacheable("activeCategory")
     public List<CategoryResponse> getActiveCategory() {
         List<Category> activeCategories = categoryRepository.findByIsActiveTrueAndIsDeletedFalse();
         List<CategoryResponse> activeCategoryDtos = activeCategories.stream().
@@ -93,6 +98,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Cacheable(value = "getCategoryById", key = "#id")
     public CategoryDto getCategoryById(Integer id) {
 //        Optional<Category> getById = categoryRepository.findByIdAndIsDeletedFalse(id);
 //        if(getById.isPresent()){
@@ -110,12 +116,16 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @CacheEvict(value = "getCategoryById", key = "#id")
     public Boolean deleteCategory(Integer id) {
         Optional<Category> getByIdNew = categoryRepository.findById(id);
         if(getByIdNew.isPresent()){
             Category categoryNew = getByIdNew.get();
             categoryNew.setIsDeleted(true);
             categoryRepository.save(categoryNew);
+
+            //remove from cache
+            cacheService.removeCacheByName(Arrays.asList("allCategory", "activeCategory"));
             return true;
         }
         return false;
